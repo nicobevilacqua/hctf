@@ -166,8 +166,4 @@ abstract contract ERC4626ETH is Ownable, ERC20 {
 
         emit Withdraw(caller, receiver, _owner, amount, amount);
     }
-
-    function _isVaultCollateralized() private view returns (bool) {
-        return totalAssets() > 0 || totalSupply() == 0;
-    }
 }
