@@ -18,3 +18,8 @@ Your mission is to capture the flag by emptying the vault, then calling `capture
 - Solutions must be submitted through the hats application at https://app.hats.finance/vulnerability
 - You must submit a working demonstration of the solution. This could be, for example, a hardhat project in which you fork the project and provide a script that will obtain the flag.
 - The contract is deployed on goerli: https://goerli.etherscan.io/address/0x8043e6836416d13095567ac645be7C629715885c#code . However, if you do not want to give away the solution to your competitors, do not execute anything on-chain :)
+
+## Run Hack Proof of Concept
+```sh
+  $ npx hardhat test ./test/Hack.js
+```
